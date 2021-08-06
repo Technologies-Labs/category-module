@@ -25,8 +25,17 @@ class CategoryModuleController extends Controller
     //  */
     public function index()
     {
-        $categories=Category::get();
-        return view('categorymodule::dashboard.categories.index',compact('categories'));
+
+        $categories =  Category::get();
+        $table      = 'categories';
+        $columns    = ['name', 'order', 'image',];
+        $actions    = ['create','edit','activate','delete' ];
+        return view('categorymodule::dashboard.categories.all',[
+             'data'          => $categories,
+             'table'         => $table,
+             'columns'       => $columns,
+             'actions'       => $actions,
+        ]);
     }
 
     /**
