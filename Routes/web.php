@@ -14,20 +14,31 @@
 use Illuminate\Support\Facades\Route;
 use Modules\CategoryModule\Http\Controllers\CategoryModuleController;
 
-/////////////////      Categories          ////////////////////////
-Route::resource('/categories', 'CategoryModuleController');
-Route::prefix('categories')->group(function() {
+/**
+ * Dashboard Routes
+ */
+Route::middleware(['auth'])->group(function () {
+    /** Categories*/
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('/categories', 'CategoryModuleController');
+        Route::prefix('categories')->group(function() {
+            Route::get('/activation/{id}','CategoryModuleController@activate');
+            Route::get('/delete/{id}','CategoryModuleController@destroy');
+        });
+    });
 
-    Route::get('/activation/{id}','CategoryModuleController@activate');
-    Route::get('/delete/{id}','CategoryModuleController@destroy');
 
+    /** Trademarks*/
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('/trademarks', 'TrademarkController');
+        Route::prefix('trademarks')->group(function() {
+
+            Route::get('/activation/{id}','TrademarkController@activate');
+            Route::get('/delete/{id}','TrademarkController@destroy');
+
+        });
+    });
 });
 
-/////////////////      Trademarks          ////////////////////////
-Route::resource('/trademarks', 'TrademarkController');
-Route::prefix('trademarks')->group(function() {
 
-    Route::get('/activation/{id}','TrademarkController@activate');
-    Route::get('/delete/{id}','TrademarkController@destroy');
 
-});

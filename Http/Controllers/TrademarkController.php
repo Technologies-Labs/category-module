@@ -18,30 +18,20 @@ public function __construct(){
     $this->middleware('permission:trademark-delete',   ['only' => ['destroy']]);
     $this->middleware('permission:trademark-activate', ['only' => ['activate']]);
 }
- /**
- * Display a listing of the resource.
- * @return Renderable
- */
+
 public function index()
 {
      $trademarks=Trademark::get();
     return view('categorymodule::dashboard.trademarks.index',compact('trademarks'));
 }
 
-/**
- * Show the form for creating a new resource.
- * @return Renderable
- */
+
 public function create()
 {
     return view('categorymodule::dashboard.trademarks.create');
 }
 
-/**
- * Store a newly created resource in storage.
- * @param Request $request
- * @return Renderable
- */
+
 public function store(TrademarkRequest $request)
 {
     $trdemark    = new TrademarkService();
@@ -63,11 +53,7 @@ public function store(TrademarkRequest $request)
 //     return view('categorymodule::dashboard.trademarks.show');
 // }
 
-/**
- * Show the form for editing the specified resource.
- * @param int $id
- * @return Renderable
- */
+
 public function edit($id)
 {
     $trademark =Trademark::find($id);
@@ -77,54 +63,46 @@ public function edit($id)
     return view('categorymodule::dashboard.trademarks.edit',compact('trademark'));
 }
 
-/**
- * Update the specified resource in storage.
- * @param Request $request
- * @param int $id
- * @return Renderable
- */
 public function update(Request $request, $id)
 {
     $request->validate([
-            'name'     => 'required|string|unique:trademarks,name,'. $id,
-        ]);
+        'name'     => 'required|string|unique:trademarks,name,'. $id,
+    ]);
 
-        $trademark = Trademark::find($id);
-        if(!$trademark){
-            return redirect()->route('dashboard')->with('failed',"trademark Not Found");
-        }
+    $trademark = Trademark::find($id);
+    if(!$trademark){
+        return redirect()->route('dashboard')->with('failed',"trademark Not Found");
+    }
 
     $trademarkUpdate = new TrademarkService();
     $trademarkUpdate -> setName($request->name);
-                     if($request->has('image')){
-                     $trademarkUpdate->updateImg($request->image,$trademark->image);
-                     }
+    if($request->has('image')){
+        $trademarkUpdate->updateImg($request->image,$trademark->image);
+    }
     $trademarkUpdate->updateTrademark($trademark);
 
     return redirect()->route("trademarks.index")->with('success', 'تم التعديل  بنجاح');
 }
 
-/**
- * Remove the specified resource from storage.
- * @param int $id
- * @return Renderable
- */
-public function destroy($id)
-{
-    $trademark=Trademark::find($id);
-    if (!$trademark) {
-        return redirect()->route('dashboard')->with('failed',"trademark Not Found");
-    }
-    $trademark->delete();
-}
 
-public function activate($id)
-{
-    $trademark=Trademark::find($id);
-    if (!$trademark) {
-        return redirect()->route('dashboard')->with('failed',"trademark Not Found");
+    public function destroy($id)
+    {
+        $trademark=Trademark::find($id);
+        if (!$trademark) {
+            return redirect()->route('dashboard')->with('failed',"trademark Not Found");
+        }
+        $trademark->delete();
     }
-    $trademark->is_active = !$trademark->is_active;
-    $trademark->save();
-}
+
+    public function activate($id)
+    {
+        $trademark=Trademark::find($id);
+        if (!$trademark) {
+            return redirect()->route('dashboard')->with('failed',"trademark Not Found");
+        }
+        $trademark->is_active = !$trademark->is_active;
+        $trademark->save();
+    }
+
+    
 }
